@@ -15,13 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @CrossOrigin
-public class ProductsController
-{
+
+public class ProductsController {
     private final ProductDao productDao;
 
     @Autowired
-    public ProductsController(ProductDao productDao)
-    {
+    public ProductsController(ProductDao productDao) {
         this.productDao = productDao;
     }
 
@@ -115,7 +114,7 @@ public class ProductsController
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteProduct(@PathVariable int id)
     {
-        // delete the category by id
+
         try {
             boolean deleted = productDao.delete(id);
 

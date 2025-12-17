@@ -19,6 +19,7 @@ import java.util.List;
 // add annotation to allow cross site origin requests
 @RestController
 @RequestMapping ("/categories")
+@CrossOrigin
 public class CategoriesController
 {
     private final CategoryDao categoryDao;
@@ -108,7 +109,7 @@ public class CategoriesController
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategory(@PathVariable int id)
     {
-        // delete the category by id
+
         try {
             boolean deleted = categoryDao.delete(id);
 
