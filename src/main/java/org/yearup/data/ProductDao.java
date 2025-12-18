@@ -14,3 +14,4 @@ public interface ProductDao
     Product update(int productId, Product product);
     boolean delete(int productId);
 }
+

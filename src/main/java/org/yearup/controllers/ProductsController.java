@@ -68,17 +68,10 @@ public class ProductsController {
 
     @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
-    public Product addProduct(@RequestBody Product product)
-    {
-        try
-        {
-            return productDao.create(product);
-        }
-        catch(Exception ex)
-        {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
-        }
+    public Product addProduct(@RequestBody Product product) {
+        return productDao.create(product);
     }
+
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ADMIN')")

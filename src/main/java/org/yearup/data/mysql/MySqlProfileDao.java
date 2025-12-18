@@ -1,19 +1,78 @@
 package org.yearup.data.mysql;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.yearup.models.Category;
 import org.yearup.models.Profile;
 import org.yearup.data.ProfileDao;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
-@Component
+@Repository
 public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
 {
     public MySqlProfileDao(DataSource dataSource)
     {
         super(dataSource);
     }
+
+    @Override
+    public List<Profile> getAllProfiles ()
+    { List<Profile> profiles = new ArrayList<>();
+
+        String query = "select user_id,first_name,last_name," +
+                "phone,email,address,city,state,zip\n" +
+                "from profiles;";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery())
+        {
+            while (resultSet.next())
+            {
+                profiles.add(mapRow(resultSet));
+            }
+        }
+        catch (SQLException e)
+        {
+            throw new RuntimeException("Error Pulling Profiles", e);
+        }
+
+        return profiles;
+
+    }
+    @Override
+    public List<Profile> getProfilesByUserId(int userId) {
+        List<Profile> profiles = new ArrayList<>();
+
+        String sql = """
+        SELECT user_id, first_name, last_name,
+               phone, email, address, city, state, zip
+        FROM profiles
+        WHERE user_id = ?
+    """;
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    profiles.add(mapRow(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error loading profile for user " + userId, e);
+        }
+
+        return profiles;
+    }
+
 
     @Override
     public Profile create(Profile profile)
@@ -44,4 +103,31 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
         }
     }
 
+
+    private Profile mapRow (ResultSet row) throws SQLException
+    {
+        int userId = row.getInt("user_Id");
+        String firstName = row.getString("first_Name");
+        String lastName = row.getString("last_Name");
+        String phone = row.getString("phone");
+        String email = row.getString("email");
+        String address = row.getString("address");
+        String city = row.getString("city");
+        String state = row.getString("state");
+        String zip = row.getString("zip");
+        Profile profile = new Profile()
+        {{
+           setUserId(userId);
+           setFirstName(firstName);
+           setLastName(lastName);
+           setPhone(phone);
+           setEmail(email);
+           setAddress(address);
+           setCity(city);
+           setState(state);
+           setZip(zip);
+        }};
+
+        return profile;
+    }
 }
