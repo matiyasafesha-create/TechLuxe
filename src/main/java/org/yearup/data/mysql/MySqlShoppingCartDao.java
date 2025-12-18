@@ -80,7 +80,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         String query =
                 "INSERT INTO shopping_cart (user_id, product_id, quantity) " +
                         "VALUES (?, ?, 1) " +
-                        "ON DUPLICATE KEY UPDATE quantity = quantity";
+                        "ON DUPLICATE KEY UPDATE quantity = quantity + 1";
 
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -90,7 +90,7 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
             preparedStatement.setInt(2, product_id);
 
 
-            preparedStatement.executeUpdate();
+
 
             int rowsAffected = preparedStatement.executeUpdate();
             System.out.println(
