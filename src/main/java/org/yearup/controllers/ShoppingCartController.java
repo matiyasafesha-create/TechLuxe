@@ -54,6 +54,7 @@ public class ShoppingCartController
         try
         {
 
+
             String userName = principal.getName();
             User user = userDao.getByUserName(userName);
 

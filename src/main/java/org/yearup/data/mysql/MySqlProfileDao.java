@@ -27,6 +27,8 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao
                 "phone,email,address,city,state,zip\n" +
                 "from profiles;";
 
+        //where
+
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery())
